@@ -16,6 +16,7 @@ def main():
 
     print("initializing embeddings")
     embedding_dim = 20
+    #weights:
     xs = np.random.normal(size=(cooc.shape[0], embedding_dim))
     ys = np.random.normal(size=(cooc.shape[1], embedding_dim))
 
@@ -34,6 +35,7 @@ def main():
         
             #Computing grad_xi and grad_yj
             e_ij = np.dot(xs[ix, :], ys[jy, :]) - np.log(n)
+            #weighting function defined by the GloVe authors:
             fM_ij = min(1.0, (n / nmax) ** alpha)
             grad_xi = 2 * fM_ij * e_ij * ys[jy, :]
             grad_yj = 2 * fM_ij * e_ij * xs[ix, :]
