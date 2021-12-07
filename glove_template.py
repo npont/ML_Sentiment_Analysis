@@ -23,14 +23,29 @@ def main():
     alpha = 3 / 4
 
     epochs = 10
+    loss_per_epoch=[]
 
     for epoch in range(epochs):
         print("epoch {}".format(epoch))
         for ix, jy, n in zip(cooc.row, cooc.col, cooc.data):
+        
+        # fill in your SGD code here, 
+        # for the update resulting from co-occurence (i,j)
+        
+            #Computing grad_xi and grad_yj
+            e_ij = np.dot(xs[ix, :], ys[jy, :]) - np.log(n)
+            fM_ij = min(1.0, (n / nmax) ** alpha)
+            grad_xi = 2 * fM_ij * e_ij * ys[jy, :]
+            grad_yj = 2 * fM_ij * e_ij * xs[ix, :]
 
-			# fill in your SGD code here, 
-			# for the update resulting from co-occurence (i,j)
-		
+            #Computing intermediate loss for ix and jy:
+            L += fM_ij * e_ij**2
+
+            #Updating the weights
+            xs[ix, :] -= eta * grad_xi
+            ys[jy, :] -= eta * grad_yj
+        
+        loss_per_epoch.append(L)
 
     np.save('embeddings', xs)
 
