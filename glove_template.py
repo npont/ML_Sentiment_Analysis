@@ -4,6 +4,7 @@ import numpy as np
 import pickle
 import random
 
+#DATA_PATH = "../twitter-datasets/"
 
 def main():
     print("loading cooccurrence matrix")
@@ -24,7 +25,7 @@ def main():
     alpha = 3 / 4
 
     epochs = 10
-    loss_per_epoch=[]
+    #loss_per_epoch=[]
 
     for epoch in range(epochs):
         print("epoch {}".format(epoch))
@@ -41,15 +42,17 @@ def main():
             grad_yj = 2 * fM_ij * e_ij * xs[ix, :]
 
             #Computing intermediate loss for ix and jy:
-            L += fM_ij * e_ij**2
+            #L += fM_ij * e_ij**2
 
             #Updating the weights
             xs[ix, :] -= eta * grad_xi
             ys[jy, :] -= eta * grad_yj
         
-        loss_per_epoch.append(L)
+        #loss_per_epoch.append(L)
 
     np.save('embeddings', xs)
+    #np.save('embeddings_full_22epoch_{}dim'.format(embedding_dim), xs)
+    #np.save('loss_22epoch_{}dim'.format(embedding_dim), loss_per_epoch)
 
 
 if __name__ == '__main__':
