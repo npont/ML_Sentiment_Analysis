@@ -3,6 +3,7 @@ from scipy.sparse import *
 import numpy as np
 import pickle
 
+DATA_PATH = "../twitter-datasets/"
 
 def main():
     with open('vocab.pkl', 'rb') as f:
@@ -26,13 +27,12 @@ def main():
                 if counter % 10000 == 0:
                     print(counter)
                 counter += 1
-    print(tokens)
-    #print("coucou")
-    #cooc = coo_matrix((data, (row, col)))
-    #print("summing duplicates (this can take a while)")
-    #cooc.sum_duplicates()
-    #with open('cooc.pkl', 'wb') as f:
-        #pickle.dump(cooc, f, pickle.HIGHEST_PROTOCOL)
+    
+    cooc = coo_matrix((data, (row, col)))
+    print("summing duplicates (this can take a while)")
+    cooc.sum_duplicates()
+    with open('cooc.pkl', 'wb') as f:
+        pickle.dump(cooc, f, pickle.HIGHEST_PROTOCOL)
 
 
 if __name__ == '__main__':
