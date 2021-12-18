@@ -102,7 +102,7 @@ def filter_some_punctuation(tweets):
     useless_punct=['.', '?', '@', ',']
     
     for punct in useless_punct:
-        tweets=tweets.str.replace(punct, ' ', regex=True)
+        tweets=tweets.replace(punct, ' ')
 
     return tweets
 
@@ -115,9 +115,9 @@ def filter_useless_words(tweets):
     Output: 
             filtered useless_words-tweets
     """
-    tweets=tweets.str.replace('<user>', ' ', regex=True)
-    tweets=tweets.str.replace('<url>', ' ', regex=True)
-    tweets=tweets.str.replace('rt', ' ', regex=True)
+    tweets=tweets.replace('<user>', ' ')
+    tweets=tweets.replace('<url>', ' ')
+    tweets=tweets.replace('rt', ' ')
     
     return tweets
 
@@ -244,8 +244,6 @@ def pre_process(data_):
         i=expand_not(i)
         i=emoji_transformation(i)
         i=remove_stopwords(i)
-        #i=lemmatize(i)
-        #i=stemming(i)
         i=emphasize(i)
         
         t.append(i)
