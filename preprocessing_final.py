@@ -1,10 +1,5 @@
 import pandas as pd
 import numpy as np
-
-import nltk
-nltk.download('stopwords')
-
-
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.lancaster import LancasterStemmer
 from nltk.corpus import stopwords
@@ -21,9 +16,12 @@ lancaster_stemmer = LancasterStemmer()
 lmt = WordNetLemmatizer()
 
 ## Load positive and negative words
+## Load positive and negative words
 PATH='data/'
 positive_words=open(PATH+'positive-words.txt').read().strip()
-negative_words=open(PATH+'negative_words').read().strip()
+positive_words=positive_words.split()
+negative_words=open(PATH+'negative_words.txt').read().strip()
+negative_words=negative_words.split()
 
 def remove_stopwords(tweet):
     """
@@ -40,91 +38,6 @@ def remove_stopwords(tweet):
             tokens.remove(word)
     return ' '.join(tokens)
 
-def lemmatize_single(w):
-    """
-    DESCRIPTION: 
-                Lemmatize a single word
-    INPUT:  
-            w: a word as a python string
-    OUTPUT: 
-            lemmatized word as a python string. In case the word cannot be lemmatized
-            it will be returned in its first form.
-    """
-    try:
-        a = lmt.lemmatize(w).lower()
-        return a
-    except Exception as e:
-        return w
-    
-def stemming_single(word):
-    """
-    DESCRIPTION: 
-                Apply stemming to a single word
-    INPUT: 
-            w: a word as a python string
-    OUTPUT: 
-            stemmed word as a python string. In case the word cannot be lemmatized
-            it will be returned in its first form.
-    """
-    return lancaster_stemmer.stem(word) 
-
-def stemming(tweet):
-    """
-    Function: 
-            Stemming to all the words from a tweet one by one
-    Input: 
-            tweet as a python string
-    Output: 
-            stemmed tweet as a python string.
-    """
-    x = [stemming_single(t) for t in tweet.split()]
-    return " ".join(x)
-
-def lemmatize(tweet):
-    """
-    Function: 
-            Lemmatize all words from a tweet one by one
-    Input: 
-            tweet: a tweet as a python string
-    Output: 
-            Lemmatized tweet as a python string.
-    """
-    x = [lemmatize_single(t) for t in tweet.split()]
-    return " ".join(x)
-
-
-def emphasize(tweet):
-    """
-    Function:
-            adds 'positive' or 'negative' to words of tweet if they are in {Positive/Negative}_words 
-    Input:
-            tweet as python string
-    Output: 
-            tweet with words associated to 'positive' or 'negative'
-    """
-    tweet_emphasized=[]
-    for w in tweet.split():
-        if (w in positive_words):
-            w = ' positive ' + w
-            tweet_emphasized.append(w) 
-        elif (w in negative_words):
-            w = ' negative '+ w
-            tweet_emphasized.append(w)
-        else: tweet_emphasized.append(w)
-    return (" ".join(tweet_emphasized)).strip()
-
-def convert_to_lowercase(tweets):
-    """
-    Function: 
-             Converts tweets into lowercases
-    Input: 
-            tweets as strings
-    Output: 
-            tweets as lowercases 
-    """
-    return tweets.str.lower()
-
-
 def filter_money(tweets):
     """
     Function:
@@ -138,9 +51,42 @@ def filter_money(tweets):
     money_symbols=['$', 'chf', '€']
     
     for symbol in money_symbols:
-        tweets=tweets.str.replace(symbol, '<money>', regex=True)
+        tweets=tweets.replace(symbol, '<money>')
     
     return tweets
+
+def emphasize(tweet):
+    """
+    Function:
+            adds 'positive' or 'negative' to words of tweet if they are in {Positive/Negative}_words 
+    Input:
+            tweet as python string
+    Output: 
+            tweet with words associated to 'positive' or 'negative'
+    """
+    tweet_emphasized=[]
+    for w in tweet.split():
+        if (positive_words.count(w) > 0):
+            w_pos = ' positive ' + w
+            tweet_emphasized.append(w_pos) 
+        elif (negative_words.count(w) > 0):
+            w_neg = ' negative '+ w
+            tweet_emphasized.append(w_neg)
+        else:
+            tweet_emphasized.append(w)
+    return (" ".join(tweet_emphasized)).strip()
+
+
+def convert_to_lowercase(tweets):
+    """
+    Function: 
+             Converts tweets into lowercases
+    Input: 
+            tweets as strings
+    Output: 
+            tweets as lowercases 
+    """
+    return tweets.lower()
 
 
 def filter_some_punctuation(tweets):
@@ -186,35 +132,35 @@ def expand_not(tweets):
             tweets with contractions expanded
     """
     
+    
     #abreviations
-    tweets = tweets.str.replace('im', 'i am', case=False)
-    tweets = tweets.str.replace('&', 'and', regex=True)
-    tweets = tweets.str.replace('btw', 'by the way', regex=True)
-    tweets = tweets.str.replace('oc', 'of course', regex=True)
-    tweets = tweets.str.replace('ily', 'i love you', regex=True)
-    tweets = tweets.str.replace('ikr', 'i know right', regex=True)
-    tweets = tweets.str.replace('idk', 'i don\'t know', regex=True)
-    tweets = tweets.str.replace('dm', 'direct message', regex=True)
-    tweets = tweets.str.replace('imo', 'in my opinion', regex=True)
-    tweets = tweets.str.replace('nbd', 'no big deal', regex=True)
-    tweets = tweets.str.replace('irl', 'in real life', regex=True)
+    tweets = tweets.replace('im', 'i am')
+    tweets = tweets.replace('&', 'and')
+    tweets = tweets.replace('btw', 'by the way')
+    tweets = tweets.replace('oc', 'of course')
+    tweets = tweets.replace('ily', 'i love you')
+    tweets = tweets.replace('ikr', 'i know right')
+    tweets = tweets.replace('idk', 'i don\'t know')
+    tweets = tweets.replace('dm', 'direct message')
+    tweets = tweets.replace('nbd', 'no big deal')
+    tweets = tweets.replace('irl', 'in real life')
     
-    #expand contractions
-    tweets = tweets.str.replace('n\'t', ' not', case=False)
-    tweets = tweets.str.replace('i\'m', 'i am', case=False)
-    tweets = tweets.str.replace('\'re', ' are', case=False)
-    tweets = tweets.str.replace('it\'s', 'it is', case=False)
-    tweets = tweets.str.replace('that\'s', 'that is', case=False)
-    tweets = tweets.str.replace('\'ll', ' will', case=False)
-    tweets = tweets.str.replace('\'l', ' will', case=False)
-    tweets = tweets.str.replace('\'ve', ' have', case=False)
-    tweets = tweets.str.replace('\'d', ' would', case=False)
-    tweets = tweets.str.replace('he\'s', 'he is', case=False)
-    tweets = tweets.str.replace('what\'s', 'what is', case=False)
-    tweets = tweets.str.replace('who\'s', 'who is', case=False)
-    tweets = tweets.str.replace('\'s', '', case=False)
-    
-    
+        #expand contractions
+    tweets = tweets.replace('n\'t', ' not')
+    tweets = tweets.replace('don\'t', ' do not')
+    tweets = tweets.replace('i\'m', 'i am')
+    tweets = tweets.replace('\'re', ' are')
+    tweets = tweets.replace('it\'s', 'it is')
+    tweets = tweets.replace('that\'s', 'that is')
+    tweets = tweets.replace('\'ll', ' will')
+    tweets = tweets.replace('\'l', ' will')
+    tweets = tweets.replace('\'ve', ' have')
+    tweets = tweets.replace('\'d', ' would')
+    tweets = tweets.replace('he\'s', 'he is')
+    tweets = tweets.replace('what\'s', 'what is')
+    tweets = tweets.replace('who\'s', 'who is')
+    tweets = tweets.replace('\'s', '')
+
     return tweets
 
 
@@ -288,20 +234,20 @@ def pre_process(data_):
     Function:
             call all the functions, to avoid having it in 'run_file'
     """
-    
-    data_=convert_to_lowercase(data_)
-    data_=filter_some_punctuation(data_)
-    data_=filter_money(data_)
-    #data_=filter_useless_words(data_)
-    data_=expand_not(data_)
 
     t=[]
     for i in data_:
+        i=convert_to_lowercase(i)
+        i=filter_money(i)
+        i=filter_useless_words(i)
+        i=filter_some_punctuation(i)
+        i=expand_not(i)
         i=emoji_transformation(i)
-        i=lemmatize(i)
-        i=stemming(i)
-        i=emphasize(i)
         i=remove_stopwords(i)
+        #i=lemmatize(i)
+        #i=stemming(i)
+        i=emphasize(i)
+        
         t.append(i)
     data_=t
 
