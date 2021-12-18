@@ -59,3 +59,24 @@ def transform_smiley(Y_train):
         Y_train_init.append(init_target(Y_train[i]))
         
     return Y_train_init
+
+def average_word_vectors(tweets ,word_embedding):
+    
+    error = 0
+    avg_word_vectors = np.zeros((len(tweets), word_embedding.shape[1] ))
+    for i, tweet in enumerate(tweets):
+        
+        split_tweet = tweet.split()
+        nb_words = 0
+        
+        for word in split_tweet:
+            try:
+                avg_word_vectors[i] += word_embedding.loc[word].to_numpy()
+                nb_words += 1
+
+            except KeyError: 
+                continue
+        if (nb_words != 0):
+            avg_word_vectors[i] /= nb_words
+        
+    return avg_word_vectors
