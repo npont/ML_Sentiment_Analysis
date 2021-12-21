@@ -1,4 +1,7 @@
 In this file we explain the organization of our project.
+
+First, to run the files, you need to upload the twitter-datasets and store them into 'twitter-datasets/'. We used them locally on our computers but they are too heavy to be used on Github. 
+
 There are two notebooks:
 - Simple_model: models done based on features representation with CountVectorizer, TF-IDF. The models are:
     . Naive Bayes Classifier (Bernoulli and Multinomial)
