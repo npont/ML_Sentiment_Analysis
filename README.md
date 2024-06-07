@@ -1,3 +1,5 @@
+## This project aims at classifying tweets as 'positive' or 'negative' according to the sentiment that is conferred. The labels correspond to 'smiling' or 'sad' smileys that have been removed.
+
 ### In this file we explain the organization of our project.
 
 First, to run the files, you need to upload the twitter-datasets and store them into 'twitter-datasets/'. We used them locally on our computers but they are too heavy to be used on Github. 
